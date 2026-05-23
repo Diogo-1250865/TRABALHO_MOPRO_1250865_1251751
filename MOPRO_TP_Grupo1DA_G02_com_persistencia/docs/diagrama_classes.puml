@@ -1,0 +1,176 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam shadowing false
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #333333
+  ArrowColor #333333
+}
+
+title Diagrama UML - Sistema de Gestão de Plataforma de Filmes
+
+interface Pesquisavel {
+  +correspondeAPesquisa(texto: String): boolean
+}
+
+interface MarcavelComoVisto {
+  +marcarFilmeComoVisto(filme: Filmes): void
+  +marcarEpisodioComoVisto(episodio: Episodio): void
+}
+
+abstract class Recurso {
+  -titulo: String
+  -genero: String
+  -ano: int
+  -duracao: double
+  -atores: ArrayList<Atores>
+  -classificacoes: ArrayList<Classificacao>
+  -comentarios: ArrayList<Comentario>
+  +adicionarAtor(ator: Atores): void
+  +adicionarClassificacao(c: Classificacao): void
+  +adicionarComentario(c: Comentario): void
+  +calcularClassificacaoMedia(): double
+  +getAvaliacaoQualitativa(): String
+}
+
+class Filmes {
+  +marcarComoVisto(): void
+}
+
+class Serie {
+  -temporadas: ArrayList<Temporada>
+  +adicionarTemporada(t: Temporada): void
+  +getTemporada(numero: int): Temporada
+}
+
+class Temporada {
+  -numero: int
+  -ano: int
+  -episodios: ArrayList<Episodio>
+  +adicionarEpisodio(e: Episodio): void
+  +removerEpisodio(e: Episodio): boolean
+}
+
+class Episodio {
+  -numero: int
+  -titulo: String
+  -duracao: double
+  -atores: ArrayList<Atores>
+  -classificacoes: ArrayList<Classificacao>
+  -comentarios: ArrayList<Comentario>
+  +adicionarAtor(a: Atores): void
+  +adicionarClassificacao(c: Classificacao): void
+  +adicionarComentario(c: Comentario): void
+  +calcularClassificacaoMedia(): double
+}
+
+class Atores {
+  -nome: String
+  -dataNascimento: String
+  -nacionalidade: String
+}
+
+abstract class Utilizador {
+  -username: String
+  -email: String
+  -password: String
+  +autenticar(username: String, password: String): boolean
+}
+
+class UtilizadorRegistrado {
+  -watchlist: Watchlist
+  -favoritos: Favoritos
+  -filmesVistos: ArrayList<Filmes>
+  -episodiosVistos: ArrayList<Episodio>
+  +adicionarFilmeLista(filme: Filmes): void
+  +adicionarEpisodioLista(episodio: Episodio): void
+  +classificarFilme(filme: Filmes, valor: int): void
+  +classificarEpisodio(episodio: Episodio, valor: int): void
+  +comentarFilme(filme: Filmes, texto: String, data: String): void
+  +comentarEpisodio(episodio: Episodio, texto: String, data: String): void
+}
+
+class Administrador
+
+class Watchlist {
+  -filmes: ArrayList<Filmes>
+  -episodios: ArrayList<Episodio>
+}
+
+class Favoritos {
+  -filmes: ArrayList<Filmes>
+  -series: ArrayList<Serie>
+}
+
+class Plataforma {
+  -filmes: ArrayList<Filmes>
+  -series: ArrayList<Serie>
+  -atores: ArrayList<Atores>
+  -utilizadores: ArrayList<Utilizador>
+  +adicionarFilme(filme: Filmes): void
+  +adicionarSerie(serie: Serie): void
+  +adicionarAtor(ator: Atores): void
+  +adicionarUtilizador(u: Utilizador): void
+  +pesquisarFilmes(texto: String): ArrayList<Filmes>
+  +pesquisarSeries(texto: String): ArrayList<Serie>
+  +pesquisarAtores(texto: String): ArrayList<Atores>
+}
+
+class Classificacao {
+  -valor: int
+  -usernameUtilizador: String
+}
+
+class Comentario {
+  -texto: String
+  -usernameUtilizador: String
+  -data: String
+}
+
+class Menu
+class Main
+
+enum Genero
+
+class RecursoDuplicado
+class AtorNaoAssociadoException
+class NaoVistoException
+class JaClassificouException
+class ClassificacaoInvalidaException
+
+Recurso <|-- Filmes
+Recurso <|-- Serie
+Recurso ..|> Pesquisavel
+Atores ..|> Pesquisavel
+Utilizador <|-- UtilizadorRegistrado
+UtilizadorRegistrado <|-- Administrador
+UtilizadorRegistrado ..|> MarcavelComoVisto
+Serie "1" *-- "0..*" Temporada
+Temporada "1" *-- "0..*" Episodio
+Recurso "1" o-- "0..*" Atores
+Episodio "1" o-- "0..*" Atores
+Recurso "1" *-- "0..*" Classificacao
+Recurso "1" *-- "0..*" Comentario
+Episodio "1" *-- "0..*" Classificacao
+Episodio "1" *-- "0..*" Comentario
+UtilizadorRegistrado "1" *-- "1" Watchlist
+UtilizadorRegistrado "1" *-- "1" Favoritos
+Watchlist "1" o-- "0..*" Filmes
+Watchlist "1" o-- "0..*" Episodio
+Favoritos "1" o-- "0..*" Filmes
+Favoritos "1" o-- "0..*" Serie
+Plataforma "1" o-- "0..*" Filmes
+Plataforma "1" o-- "0..*" Serie
+Plataforma "1" o-- "0..*" Atores
+Plataforma "1" o-- "0..*" Utilizador
+Menu --> Plataforma
+Main --> Menu
+Main --> Plataforma
+
+RecursoDuplicado --|> Exception
+AtorNaoAssociadoException --|> Exception
+NaoVistoException --|> Exception
+JaClassificouException --|> Exception
+ClassificacaoInvalidaException --|> Exception
+@enduml
